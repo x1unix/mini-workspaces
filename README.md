@@ -129,6 +129,9 @@ return {
       },
     },
     opts = {
+      -- Important: prevent conflict with session restoration.
+      swap_current_buffer = false,
+
       hooks = {
         on_before_switch = function(from, to, git_path_info)
           -- Persist workspace session
