@@ -95,7 +95,7 @@ require('telescope').load_extension('workspaces')
 require('telescope').extensions.worktrees.list_worktrees()
 ```
 
-### `Snacks.nvim`
+### Snacks.nvim
 
 ```lua
 -- Switch between workspaces
