@@ -81,9 +81,21 @@ The plugin provides a helper function to save current session either as a local 
 require('mini-workspaces.ui').save_session_dialog()
 ```
 
-### Switch between workspaces using `Snacks.nvim`
+### Telescope
 
-Plugin comes with `Snacks.nvim` integration.
+1. Load the extension
+
+```lua
+require('telescope').load_extension('workspaces')
+```
+
+2. Call the picker to switch a workspace:
+
+```lua
+require('telescope').extensions.worktrees.list_worktrees()
+```
+
+### `Snacks.nvim`
 
 ```lua
 -- Switch between workspaces
