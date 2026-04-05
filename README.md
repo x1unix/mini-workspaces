@@ -1,0 +1,142 @@
+# Mini Workspaces
+
+Plugin to improve local directory sessions experience with [`mini.sessions`](https://github.com/nvim-mini/mini.sessions).
+
+The plugin takes care of managing local sessions, properly transitioning between them and storing recent workspaces history.
+
+Initial motivation of the plugin is to provide a better integration for [worktrees.nvim](https://github.com/juksuu/worktrees.nvim).
+
+## TODOs
+
+- [ ] Automatically sync workspaces history using `mini.sessions` hooks.
+
+## Installation
+
+Plugin requires `mini.nvim` or `mini.sessions` to be installed.
+
+<details>
+<summary>With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a></summary>
+
+```lua
+{
+    'x1unix/mini-workspaces',
+    dependencies = {
+        -- Or use 'nvim-mini/mini.sessions'.
+        'nvim-mini/mini.nvim',
+        opts = { ... }
+    },
+    opts = {
+        -- Plugin config
+    }
+}
+```
+
+</details>
+
+**Important: don't forget to call `require('mini-workspaces')` to enable its functionality.**
+
+## Default config
+
+```lua
+-- No need to copy this inside `setup()`. Will be used automatically.
+{
+    -- Location of a file with recent workspaces history. Used for `mini.starter` integration.
+    history_file = vim.fs.joinpath(vim.fn.stdpath('data'), 'workspaces.json'),
+
+    -- Max number of items in history.
+    history_max_items = 5,
+}
+```
+
+## Usage
+
+### Commands
+
+- `MiniWorkspacesSave` - Create or update a local session in a current working directory and add workspace to a history.
+- `MiniWorkspacesOpen` - Restore local session in a given directory.
+  - Example: `:MiniWorkspacesOpen /path/to/dir`
+
+## Integration
+
+### Show workspaces history in `mini.starter`
+
+```lua
+require('mini-workspaces').setup()
+
+require('mini.starter').setup({
+    items = {
+        require('mini-workspaces.starter').history(),
+
+        -- Rest of sections
+        starter.sections.builtin_actions()
+    }
+})
+```
+
+### Session save dialog
+
+The plugin provides a helper function to save current session either as a local (workspace) or a global session.
+
+```lua
+require('mini-workspaces.ui').save_session_dialog()
+```
+
+### Switch between workspaces using `Snacks.nvim`
+
+Plugin comes with `Snacks.nvim` integration.
+
+```lua
+-- Switch between workspaces
+Snacks.picker.worktrees()
+
+-- Pick and delete workspace
+Snacks.picker.workspaces_remove()
+```
+
+### Per-worktree session management using `worktrees.nvim`
+
+> [!NOTE]
+> The `x1unix/worktrees.nvim` fork should be used until [this PR](https://github.com/Juksuu/worktrees.nvim/pull/11) is merged.
+
+Example with lazy.vim package manager:
+
+```lua
+return {
+  {
+    -- TODO: Switch to upstream when merged: https://github.com/Juksuu/worktrees.nvim/pull/11
+    'x1unix/worktrees.nvim',
+    branch = 'feat/on-before-switch',
+    keys = {
+      {
+        'gW',
+        mode = { 'n' },
+        function()
+          Snacks.picker.worktrees()
+        end,
+        desc = 'git: switch worktree',
+      },
+    },
+    opts = {
+      hooks = {
+        on_before_switch = function(from, to, git_path_info)
+          -- Persist workspace session
+          require('mini-workspaces').save_workspace(from, {
+            force = true,
+            wipeout = true,
+          })
+        end,
+        on_switch = function(from, to, git_path_info)
+          -- Restore session
+          require('mini-workspaces').open_workspace(to, {
+            create_if_missing = true,
+            on_created = require('util.uiutil').open_readme,
+          })
+        end,
+        on_before_remove = function(path)
+          require('mini-workspaces').delete_workspace(path, { force = true })
+        end,
+      },
+    },
+  },
+}
+```

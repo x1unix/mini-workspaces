@@ -1,0 +1,7 @@
+.idea
+.vscode
+.claude
+
+# Local session
+.session.vim
+Session.vim
