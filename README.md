@@ -99,7 +99,7 @@ require('telescope').extensions.worktrees.list_worktrees()
 
 ```lua
 -- Switch between workspaces
-Snacks.picker.worktrees()
+Snacks.picker.workspaces()
 
 -- Pick and delete workspace
 Snacks.picker.workspaces_remove()
