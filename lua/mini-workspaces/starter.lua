@@ -12,7 +12,7 @@ local function placeholder_entry(msg)
 end
 
 -- Returns workspaces list section for mini.starter
-M.workspaces = function()
+M.history = function()
   local workspaces = require('mini-workspaces')
   if not workspaces._ready then
     return placeholder_entry([[Workspaces plugin is not set up]])

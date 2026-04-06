@@ -59,7 +59,7 @@ Plugin requires `mini.nvim` or `mini.sessions` to be installed.
 
 ## Integration
 
-### Show workspaces history in `mini.starter`
+### Show recent workspaces in `mini.starter`
 
 ```lua
 require('mini-workspaces').setup()
