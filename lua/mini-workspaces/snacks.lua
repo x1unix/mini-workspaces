@@ -41,7 +41,7 @@ function Switch.confirm(picker, item)
   picker:close()
 
   if item ~= nil then
-    require('pkg.mini-session-workspaces').open_workspace(item.path)
+    require('mini-workspaces').open_workspace(item.path)
   end
 end
 
@@ -58,7 +58,7 @@ function Remove.confirm(picker, item)
   picker:close()
 
   if item ~= nil then
-    require('pkg.mini-session-workspaces').delete_workspace(item.path)
+    require('mini-workspaces').delete_workspace(item.path)
   end
 end
 
