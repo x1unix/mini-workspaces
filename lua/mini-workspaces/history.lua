@@ -94,10 +94,16 @@ local function queue_sync(db)
   end, SYNC_DEBOUNCE_MS)
 end
 
+--- Load history from a file. Returns false is history is disabled.
 --- @class db History
+--- @return boolean
 local function pull_history(db)
+  if not db._fname or db._fname == '' then
+    return false
+  end
+
   if db._dirty then
-    return
+    return true
   end
 
   if vim.fn.filereadable(db._fname) ~= 1 then
@@ -105,12 +111,12 @@ local function pull_history(db)
     db._entries = nil
     db._index = {}
     db._dirty = false
-    return
+    return true
   end
 
   local modtime = vim.fn.getftime(db._fname)
   if modtime == db._modtime and db._index ~= nil then
-    return
+    return true
   end
 
   local entries = {}
@@ -144,6 +150,7 @@ local function pull_history(db)
   db._index = #entries > 0 and build_index(entries) or {}
   db._modtime = modtime
   db._dirty = false
+  return true
 end
 
 --- Opens a workspace history database.
@@ -179,7 +186,9 @@ end
 --- @param path string
 --- @param metadata table|nil
 function History:add(path, metadata)
-  pull_history(self)
+  if not pull_history(self) then
+    return
+  end
 
   local label = path_label(path)
   local entries = self._entries or {}
@@ -216,7 +225,9 @@ end
 --- @param path string
 --- @return boolean Whether entry was updated. False if not found.
 function History:touch(path)
-  pull_history(self)
+  if not pull_history(self) then
+    return false
+  end
 
   if not self._entries or not self._index[path] then
     return false
@@ -235,6 +246,10 @@ end
 
 --- Save history to disk.
 function History:sync()
+  if not self._fname or self._fname == '' then
+    return
+  end
+
   if not self._dirty then
     return true
   end
@@ -261,7 +276,9 @@ end
 
 --- @param path string Path of history entry
 function History:delete(path)
-  pull_history(self)
+  if not pull_history(self) then
+    return
+  end
 
   if not self._entries or not self._index[path] then
     return

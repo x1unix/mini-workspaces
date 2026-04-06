@@ -18,6 +18,10 @@ M.workspaces = function()
     return placeholder_entry([[Workspaces plugin is not set up]])
   end
 
+  if workspaces.config.history_file == '' then
+    return placeholder_entry([[Workspaces history has been disabled]])
+  end
+
   local entries = workspaces.history()
   if not entries or #entries == 0 then
     return placeholder_entry([[History is empty]])
@@ -29,7 +33,7 @@ M.workspaces = function()
     return {
       name = entry.label,
       action = 'MiniWorkspacesOpen ' .. vim.fn.fnameescape(entry.path),
-      section = 'Workspaces',
+      section = 'Recent workspaces',
     }
   end, entries)
   return sections

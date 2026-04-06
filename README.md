@@ -41,6 +41,7 @@ Plugin requires `mini.nvim` or `mini.sessions` to be installed.
 -- No need to copy this inside `setup()`. Will be used automatically.
 {
     -- Location of a file with recent workspaces history. Used for `mini.starter` integration.
+    -- Setting this to empty string ('') disables recent workspaces history.
     history_file = vim.fs.joinpath(vim.fn.stdpath('data'), 'workspaces.json'),
 
     -- Max number of items in history.

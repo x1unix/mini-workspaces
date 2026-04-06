@@ -2,8 +2,8 @@ local History = require('mini-workspaces.history')
 local utils = require('mini-workspaces.utils')
 
 --- @class MiniWorkspaces.PluginConfig
---- @field history_file string
---- @field history_max_items number
+--- @field history_file string Path to history file to save recent workspaces.
+--- @field history_max_items number Recent workspaces limit in a history file.
 
 local M = {
   _ready = false,
@@ -22,7 +22,7 @@ local M = {
 }
 
 --- @class MiniWorkspaces.Options
---- @field history_file string|nil Path to a file to store workspaces history.
+--- @field history_file string|nil Path to a file to store workspaces history. Empty path disables history.
 --- @field history_max_items number|nil Max number of workspaces to store in a history file.
 
 --- @param opts MiniWorkspaces.Options|nil
@@ -40,13 +40,16 @@ M.setup = function(opts)
 
   M._sessions = sessions
   M.config = vim.tbl_deep_extend('force', vim.deepcopy(M.config), opts or {})
+
   M._history = History:open(M.config.history_file, M.config.history_max_items)
 
   local g = vim.api.nvim_create_augroup('MiniWorkspaces', { clear = true })
   vim.api.nvim_create_autocmd('VimLeavePre', {
     group = g,
     callback = function()
-      M._history:sync()
+      if M._history then
+        M._history:sync()
+      end
     end,
   })
 
