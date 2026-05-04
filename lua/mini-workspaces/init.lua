@@ -180,6 +180,8 @@ end
 --- @field metadata table|nil Additional metadata for history entry.
 
 --- Save directory session.
+--- Note: use 'metadata.label' to override workspace label in history.
+---
 --- @param path string | nil
 --- @param opts MiniWorkspaces.SaveWorkspaceOpts|nil
 M.save_workspace = function(path, opts)

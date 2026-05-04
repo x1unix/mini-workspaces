@@ -200,6 +200,7 @@ function History:add(path, metadata)
     return
   end
 
+  -- Entry label can be overriden by 'metadata.label'
   local label = path_label(path)
   local entries = self._entries or {}
 
@@ -207,8 +208,11 @@ function History:add(path, metadata)
     self._entries = entries
   end
 
+  local old_meta = nil
   local existing_idx = self._index and self._index[path] or nil
   if existing_idx then
+    -- If session exists, extend
+    old_meta = self._entries[existing_idx]
     table.remove(entries, existing_idx)
   end
 
@@ -219,6 +223,15 @@ function History:add(path, metadata)
     mod_time = os.time(),
     metadata = metadata,
   }
+
+  -- Extend metadata
+  if old_meta ~= nil then
+    if metadata == nil then
+      metadata = old_meta
+    else
+      metadata = vim.tbl_extend('force', old_meta, metadata)
+    end
+  end
 
   table.insert(entries, 1, entry)
   if self._limit > 0 and #entries > self._limit then

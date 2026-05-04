@@ -33,4 +33,16 @@ M.dispose_workspace = function()
   vim.v.this_session = ''
 end
 
+--- Returns n segments from given path starting from base name.
+---
+--- Example: `get_path_segments('/foo/bar/baz', 2) -> 'bar/baz`
+---
+--- @param path string
+--- @param n number
+M.get_path_segments = function(path, n)
+  local parts = vim.split(path, '/', { trimempty = true })
+  local segments = vim.list_slice(parts, #parts - n + 1, #parts)
+  return table.concat(segments, '/')
+end
+
 return M
