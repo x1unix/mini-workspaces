@@ -139,6 +139,10 @@ return {
           require('mini-workspaces').save_workspace(from, {
             force = true,
             wipeout = true,
+            metadata = {
+              -- Append parent directory name to history entry.
+              label = require('mini-workspaces.utils').get_path_segments(from, 2),
+            },
           })
         end,
         on_switch = function(from, to, git_path_info)
@@ -146,6 +150,10 @@ return {
           require('mini-workspaces').open_workspace(to, {
             create_if_missing = true,
             on_created = require('util.uiutil').open_readme,
+            metadata = {
+              -- Append parent directory name to history entry.
+              label = require('mini-workspaces.utils').get_path_segments(from, 2),
+            },
           })
         end,
         on_before_remove = function(path)
