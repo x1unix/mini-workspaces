@@ -62,10 +62,20 @@ local function path_label(path)
   return vim.fn.fnamemodify(path, ':t')
 end
 
+local function dir_exists(path)
+  local s = vim.uv.fs_stat(path)
+  return s ~= nil and s.type == 'directory'
+end
+
 --- @param item unknown
 --- @return MiniWorkspaces.History.Entry|nil
 local function normalize_entry(item)
   if type(item) ~= 'table' or type(item.path) ~= 'string' or #item.path == 0 then
+    return nil
+  end
+
+  -- Skip if destination no longer exists
+  if not dir_exists(item.path) then
     return nil
   end
 
