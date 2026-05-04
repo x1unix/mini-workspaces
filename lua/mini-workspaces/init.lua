@@ -193,7 +193,7 @@ M.save_workspace = function(path, opts)
   if force or exists then
     M._sessions.write(M.session_file(), {
       force = true,
-      verbose = false,
+      verbose = true,
     })
 
     M._history:add(path, opts and opts.metadata)
