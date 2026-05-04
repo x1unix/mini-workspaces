@@ -209,7 +209,7 @@ function History:add(path, metadata)
   end
 
   local existing_idx = self._index and self._index[path] or nil
-  local old_meta = existing_idx and self._entries[existing_idx] or nil
+  local old_meta = existing_idx and self._entries[existing_idx].metadata or nil
   if existing_idx then
     table.remove(entries, existing_idx)
   end
