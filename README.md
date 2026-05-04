@@ -106,18 +106,14 @@ Snacks.picker.workspaces()
 Snacks.picker.workspaces_remove()
 ```
 
-### Per-worktree session management using `worktrees.nvim`
-
-> [!NOTE]
-> The `x1unix/worktrees.nvim` fork should be used until [this PR](https://github.com/Juksuu/worktrees.nvim/pull/11) is merged.
+### Per-worktree session management using [`worktrees.nvim`](https://github.com/Juksuu/worktrees.nvim)
 
 Example with lazy.vim package manager:
 
 ```lua
 return {
   {
-    -- TODO: Switch to upstream when merged: https://github.com/Juksuu/worktrees.nvim/pull/11
-    'x1unix/worktrees.nvim',
+    'Juksuu/worktrees.nvim',
     branch = 'feat/on-before-switch',
     keys = {
       {
