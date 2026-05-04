@@ -177,7 +177,7 @@ end
 --- @class MiniWorkspaces.SaveWorkspaceOpts
 --- @field force boolean|nil Create a new session if not exists.
 --- @field wipeout boolean|nil Close all buffers after save.
---- @field metadata table|nil Additional metadata for history entry.
+--- @field metadata table|nil Additional metadata for history entry. Use 'label' key field to override history entry label.
 
 --- Save directory session.
 --- Note: use 'metadata.label' to override workspace label in history.

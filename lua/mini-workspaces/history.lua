@@ -208,12 +208,24 @@ function History:add(path, metadata)
     self._entries = entries
   end
 
-  local old_meta = nil
   local existing_idx = self._index and self._index[path] or nil
+  local old_meta = existing_idx and self._entries[existing_idx] or nil
   if existing_idx then
-    -- If session exists, extend
-    old_meta = self._entries[existing_idx]
     table.remove(entries, existing_idx)
+  end
+
+  -- Extend old metadata to preserve label (if any).
+  if old_meta ~= nil then
+    if metadata == nil then
+      metadata = old_meta
+    else
+      metadata = vim.tbl_extend('force', old_meta, metadata)
+    end
+  end
+
+  -- Label can be overriden via metadata.
+  if metadata and metadata.label then
+    label = metadata.label
   end
 
   --- @type MiniWorkspaces.History.Entry
@@ -223,15 +235,6 @@ function History:add(path, metadata)
     mod_time = os.time(),
     metadata = metadata,
   }
-
-  -- Extend metadata
-  if old_meta ~= nil then
-    if metadata == nil then
-      metadata = old_meta
-    else
-      metadata = vim.tbl_extend('force', old_meta, metadata)
-    end
-  end
 
   table.insert(entries, 1, entry)
   if self._limit > 0 and #entries > self._limit then
